@@ -1,0 +1,12 @@
+API:
+    - Apps/Scoreboards
+    - Add to scoreboard
+      - Username
+      - Score
+    - Do not allow duplicate usernames, use the highest score
+    - View scoreboard
+
+Frontend:
+    - Create scoreboard (slug, name, description)
+    - Dev Profile: Name, link to website
+    - View API key

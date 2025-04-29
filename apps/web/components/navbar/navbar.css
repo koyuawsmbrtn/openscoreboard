@@ -1,0 +1,24 @@
+@layer components {
+    .sheet-content-top {
+        --sheet-slide-in-from: translateY(-100%);
+        --sheet-slide-in-to: translateY(0);
+        --sheet-slide-out-to: translateY(-100%);
+        animation: sheet-slide-in 0.3s ease-out;
+    }
+
+    @keyframes sheet-slide-in {
+        from {
+            transform: var(--sheet-slide-in-from);
+        }
+
+        to {
+            transform: var(--sheet-slide-in-to);
+        }
+    }
+
+    @keyframes sheet-slide-out {
+        to {
+            transform: var(--sheet-slide-out-to);
+        }
+    }
+}
