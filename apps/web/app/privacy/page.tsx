@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
   
         <h2 className="text-2xl font-semibold mt-6 mb-4">5. Your Rights</h2>
         <p className="mb-4">
-          You have the right to access, update, or delete your personal information. If you wish to exercise these rights, please contact us at support@openscoreboard.com.
+          You have the right to access, update, or delete your personal information. If you wish to exercise these rights, please contact us at support@koyu.space.
         </p>
   
         <h2 className="text-2xl font-semibold mt-6 mb-4">6. Changes to This Privacy Policy</h2>
