@@ -22,7 +22,6 @@ export async function GET(req: Request) {
         id: true,
         name: true,
         description: true,
-        public: true,
         createdAt: true,
         updatedAt: true,
         apiKey: true,
