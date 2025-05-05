@@ -26,6 +26,7 @@ const features = [
 ];
 
 const Features = () => {
+  const [flashlightStyles, setFlashlightStyles] = useState<Record<number, string>>({});
   const [transformStyles, setTransformStyles] = useState<Record<number, string>>({});
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
@@ -37,16 +38,25 @@ const Features = () => {
     const rotateX = ((y - centerY) / centerY) * 10; // Rotate up to 10 degrees
     const rotateY = ((x - centerX) / centerX) * -10; // Rotate up to 10 degrees
 
+    setFlashlightStyles((prev) => ({
+      ...prev,
+      [index]: `radial-gradient(circle at ${x}px ${y}px, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 60%)`,
+    }));
+
     setTransformStyles((prev) => ({
       ...prev,
-      [index]: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+      [index]: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
     }));
   };
 
   const handleMouseLeave = (index: number) => {
+    setFlashlightStyles((prev) => ({
+      ...prev,
+      [index]: "none", // Remove the flashlight effect
+    }));
     setTransformStyles((prev) => ({
       ...prev,
-      [index]: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
+      [index]: "rotateX(0deg) rotateY(0deg)", // Reset rotation
     }));
   };
 
@@ -63,11 +73,14 @@ const Features = () => {
           {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="flex flex-col border rounded-xl py-6 px-5 bg-white dark:bg-muted dark:brightness-[125%] shadow-md transition-transform transform cursor-default"
+              className="relative flex flex-col border rounded-xl py-6 px-5 bg-white dark:bg-muted dark:brightness-[125%] shadow-md transition-transform transform cursor-default"
               style={{
-                transform: transformStyles[index],
-                transition: "transform 0.2s ease-out",
-                transformStyle: "preserve-3d", // Preserve 3D for child elements
+                backgroundImage: flashlightStyles[index], // Apply flashlight effect
+                transition: "background-image 0.1s ease-out, transform 0.2s ease-out",
+                transform: transformStyles[index], // Apply rotation effect
+                perspective: "1000px", // Add perspective for 3D effect
+                transformStyle: "preserve-3d", // Preserve 3D transformations
+                backfaceVisibility: "hidden", // Hide the back face
               }}
               onMouseMove={(e) => handleMouseMove(e, index)}
               onMouseLeave={() => handleMouseLeave(index)}
