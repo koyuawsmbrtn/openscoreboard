@@ -1,15 +1,15 @@
-import {
-  Blocks,
-  Settings2,
-} from "lucide-react";
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import { Blocks, Settings2 } from "lucide-react";
 import Github from "./icons/github";
 
 const features = [
   {
     icon: Github,
     title: "Free and open-source",
-    description: "OpenScoreboard is completely free to use and open-source, allowing you to selfhost it.",
+    description:
+      "OpenScoreboard is completely free to use and open-source, allowing you to selfhost it.",
   },
   {
     icon: Settings2,
@@ -26,6 +26,30 @@ const features = [
 ];
 
 const Features = () => {
+  const [transformStyles, setTransformStyles] = useState<Record<number, string>>({});
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, index: number) => {
+    const card = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - card.left; // Mouse X relative to the card
+    const y = e.clientY - card.top; // Mouse Y relative to the card
+    const centerX = card.width / 2;
+    const centerY = card.height / 2;
+    const rotateX = ((y - centerY) / centerY) * 10; // Rotate up to 10 degrees
+    const rotateY = ((x - centerX) / centerX) * -10; // Rotate up to 10 degrees
+
+    setTransformStyles((prev) => ({
+      ...prev,
+      [index]: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+    }));
+  };
+
+  const handleMouseLeave = (index: number) => {
+    setTransformStyles((prev) => ({
+      ...prev,
+      [index]: "perspective(1000px) rotateX(0deg) rotateY(0deg)",
+    }));
+  };
+
   return (
     <div className="flex items-center justify-center py-12 bg-muted">
       <div>
@@ -36,16 +60,40 @@ const Features = () => {
           OpenScoreboard is designed to be flexible and adaptable, allowing you to create the perfect scoreboard for your game.
         </p>
         <div className="mt-10 sm:mt-16 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-lg mx-auto px-6">
-          {features.map((feature) => (
+          {features.map((feature, index) => (
             <div
               key={feature.title}
-              className="flex flex-col border rounded-xl py-6 px-5 bg-white dark:bg-muted dark:brightness-[125%] shadow-md transition-transform transform hover:scale-105 cursor-default"
+              className="flex flex-col border rounded-xl py-6 px-5 bg-white dark:bg-muted dark:brightness-[125%] shadow-md transition-transform transform cursor-default"
+              style={{
+                transform: transformStyles[index],
+                transition: "transform 0.2s ease-out",
+                transformStyle: "preserve-3d", // Preserve 3D for child elements
+              }}
+              onMouseMove={(e) => handleMouseMove(e, index)}
+              onMouseLeave={() => handleMouseLeave(index)}
             >
-              <div className="mb-3 h-10 w-10 flex items-center justify-center bg-muted rounded-full">
+              <div
+                className="mb-3 h-10 w-10 flex items-center justify-center bg-muted rounded-full"
+                style={{
+                  transform: "translateZ(20px)", // Prevent text/icon warping
+                }}
+              >
                 <feature.icon className="h-6 w-6" />
               </div>
-              <span className="text-lg font-semibold">{feature.title}</span>
-              <p className="mt-1 text-foreground/80 text-[15px]">
+              <span
+                className="text-lg font-semibold"
+                style={{
+                  transform: "translateZ(20px)", // Prevent text warping
+                }}
+              >
+                {feature.title}
+              </span>
+              <p
+                className="mt-1 text-foreground/80 text-[15px]"
+                style={{
+                  transform: "translateZ(20px)", // Prevent text warping
+                }}
+              >
                 {feature.description}
               </p>
             </div>
