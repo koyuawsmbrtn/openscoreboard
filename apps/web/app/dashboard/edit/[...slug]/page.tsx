@@ -204,25 +204,25 @@ export default function EditScoreboardPage() {
           />
         </div>
         <div>
-            <Label htmlFor="apiKey">API Key</Label>
-            <div className="relative">
+          <Label htmlFor="apiKey">API Key</Label>
+          <div className="relative flex items-center">
             <Input
-                id="apiKey"
-                name="apiKey"
-                value={scoreboard.apiKey}
-                readOnly
-                className="pr-12"
+              id="apiKey"
+              name="apiKey"
+              value={scoreboard.apiKey}
+              readOnly
+              className="flex-1"
             />
             <Button
-                type="button"
-                onClick={handleRefreshAPIKey}
-                disabled={loading}
-                className="absolute inset-y-0 right-0 px-3 cursor-pointer"
-                variant="outline"
+              type="button"
+              onClick={handleRefreshAPIKey}
+              disabled={loading}
+              className="ml-2 cursor-pointer"
+              variant="outline"
             >
-                <RefreshCcw className="h-4 w-4" />
+              <RefreshCcw className="h-4 w-4" />
             </Button>
-            </div>
+          </div>
         </div>
         <Button type="submit" disabled={loading} className="w-full cursor-pointer">
           {loading ? "Updating..." : "Update Scoreboard"}
