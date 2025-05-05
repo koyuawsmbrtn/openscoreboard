@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/sidebar"
 import { Logo } from "../../components/logo"
 import { authClient } from "@/lib/auth-client"
-import { getScoreboards } from "@/lib/actions"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useEffect } from "react"
@@ -20,27 +19,35 @@ import { useEffect } from "react"
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const session = authClient.useSession()
   const user = session.data?.user
-  const [scoreboards, setScoreboards] = React.useState<{ 
-    id: string; 
-    createdAt: Date; 
-    updatedAt: Date; 
-    name: string; 
-    ownerId: string; 
-    apikey: string | null; 
-    public: boolean; 
-    description: string | null; 
-  }[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [scoreboards, setScoreboards] = React.useState<any[]>([])
   
   useEffect(() => {
     const fetchScoreboards = async () => {
       if (user?.id) {
-        const scoreboards = await getScoreboards(user.id)
-        setScoreboards(scoreboards)
+        try {
+          const response = await fetch("/api/scoreboard/get-private", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            console.error("Failed to fetch scoreboards:", response.statusText);
+            return;
+          }
+
+          const scoreboards = await response.json();
+          setScoreboards(scoreboards);
+        } catch (error) {
+          console.error("Error fetching scoreboards:", error);
+        }
       }
-    }
-    fetchScoreboards()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    };
+    fetchScoreboards();
+  }, [user?.id]);
   
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -66,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {scoreboards.map((board) => (
               <Link 
                 key={board.id} 
-                href={`/dashboard/${board.id}`}
+                href={`/dashboard/edit/${board.slug}`}
                 className="flex items-center gap-2 rounded-lg px-4 py-2 hover:bg-muted transition-colors"
               >
                 <span className="group-data-[collapsible=icon]:hidden">{board.name}</span>
