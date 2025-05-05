@@ -35,7 +35,7 @@ export function CreateScoreboardForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create scoreboard.");
+        throw new Error(data.error || "Failed to create scoreboard. The name is most likely already taken.");
       }
 
       toast.success("Scoreboard created successfully!");
