@@ -1,6 +1,6 @@
 # OpenScoreboard
 
-OpenScoreboard is a modern, open-source platform for managing and showcasing game scoreboards. Built with [Next.js](https://nextjs.org), [Prisma](https://www.prisma.io), and [Better-Auth](https://better-auth.dev), it provides a robust and scalable solution for developers and gamers alike.
+OpenScoreboard is a modern, open-source platform for maintaining scoreboards in videogames. Built with [Next.js](https://nextjs.org), [Prisma](https://www.prisma.io), and [Better-Auth](https://better-auth.dev), it provides a robust and scalable solution for developers and gamers alike.
 
 ## Features
 
