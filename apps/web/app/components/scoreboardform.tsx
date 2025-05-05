@@ -46,7 +46,7 @@ export function CreateScoreboardForm() {
       }, 500);
     } catch (error) {
       console.error(error);
-      toast.error(error instanceof Error ? error.message : "Failed to create scoreboard.");
+      toast.error(error instanceof Error ? error.message : "Failed to create scoreboard. The name is most likely already taken.");
     } finally {
       setLoading(false);
     }
@@ -57,6 +57,9 @@ export function CreateScoreboardForm() {
       <div>
         <Label htmlFor="name">Name</Label>
         <Input id="name" name="name" required />
+        <p className="text-sm text-gray-500">
+          This will be the name of your scoreboard. It should be unique and descriptive.
+        </p>
       </div>
       <div>
         <Label htmlFor="description">Description</Label>

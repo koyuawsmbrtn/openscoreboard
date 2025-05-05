@@ -45,7 +45,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error("Error creating scoreboard:", error);
     return NextResponse.json(
-      { error: "Failed to create scoreboard." },
+      { error: "Failed to create scoreboard. The name is most likely already taken." },
       { status: 500 }
     );
   }
