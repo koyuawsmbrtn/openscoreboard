@@ -47,7 +47,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       }
     };
     fetchScoreboards();
+
+    window.addEventListener("scoreboard-refresh", fetchScoreboards);
+
+    return () => {
+      window.removeEventListener("scoreboard-refresh", fetchScoreboards);
+    };
   }, [user?.id]);
+
   
   return (
     <Sidebar collapsible="icon" {...props}>

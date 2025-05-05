@@ -1,3 +1,5 @@
+/* eslint-disable no-async-promise-executor */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -8,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
 import { RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 
 export default function EditScoreboardPage() {
   const router = useRouter();
@@ -25,7 +28,7 @@ export default function EditScoreboardPage() {
 
   useEffect(() => {
     if (!slug) {
-      alert("Scoreboard slug is missing.");
+      toast.error("Scoreboard slug is missing.");
       router.push("/dashboard");
       return;
     }
@@ -38,8 +41,6 @@ export default function EditScoreboardPage() {
         }
         const data = await response.json();
 
-        // Filter the scoreboards to find the one with the matching slug
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const matchedScoreboard = data.find((board: any) => board.slug === slug);
         if (!matchedScoreboard) {
           throw new Error("Scoreboard not found.");
@@ -48,17 +49,13 @@ export default function EditScoreboardPage() {
         setScoreboard({
           id: matchedScoreboard.id || "",
           name: matchedScoreboard.name || "",
-          description: matchedScoreboard.description || "", // Include description
-          apiKey: matchedScoreboard.apiKey || "", // Set apiKey from matchedScoreboard
+          description: matchedScoreboard.description || "",
+          apiKey: matchedScoreboard.apiKey || "",
           slug: matchedScoreboard.slug || "",
         });
       } catch (error) {
         console.error(error);
-        if (error instanceof Error) {
-          alert(error.message || "Failed to load scoreboard.");
-        } else {
-          alert("Failed to load scoreboard.");
-        }
+        toast.error(error instanceof Error ? error.message : "Failed to load scoreboard.");
         router.push("/dashboard");
       }
     };
@@ -88,95 +85,105 @@ export default function EditScoreboardPage() {
         throw new Error(errorData.error || "Failed to update scoreboard.");
       }
 
-      alert("Scoreboard updated successfully.");
+      toast.success("Scoreboard updated successfully.");
     } catch (error) {
       console.error(error);
-      if (error instanceof Error) {
-        alert(error.message || "Failed to update scoreboard.");
-      } else {
-        alert("Failed to update scoreboard.");
-      }
+      toast.error(error instanceof Error ? error.message : "Failed to update scoreboard.");
     } finally {
       setLoading(false);
     }
   };
 
   const deleteScoreboard = async () => {
-    if (confirm("Are you sure you want to delete this scoreboard?")) {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/scoreboard/delete?slug=${encodeURIComponent(scoreboard.slug)}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to delete scoreboard.");
-        }
-        alert("Scoreboard deleted successfully.");
-        router.push("/dashboard");
-      } catch (error) {
-        console.error(error);
-        if (error instanceof Error) {
-          alert(error.message || "Failed to delete scoreboard.");
-        } else {
-          alert("Failed to delete scoreboard.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    deleteScoreboard();
+    toast.custom(
+          (t) => (
+            <div className="p-4 bg-popover rounded-md shadow-md border">
+              <p>Are you sure you want to delete this scoreboard? This action cannot be undone.</p>
+              <div className="flex justify-end gap-2 mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => toast.dismiss(t)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={async () => {
+                    toast.dismiss(t);
+                    setLoading(true);
+                    try {
+                      const response = await fetch(`/api/scoreboard/delete?slug=${encodeURIComponent(scoreboard.slug)}`, {
+                        method: "DELETE",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                      });
+                      if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || "Failed to delete scoreboard.");
+                      }
+                      toast.success("Scoreboard deleted successfully.");
+                      router.push("/dashboard");
+                      window.setTimeout(() => {
+                        const event = new Event("scoreboard-refresh");
+                        window.dispatchEvent(event);
+                      }, 500);
+                    } catch (error) {
+                      console.error(error);
+                      toast.error(error instanceof Error ? error.message : "Failed to delete scoreboard.");
+                    } finally {
+                      setLoading(false);
+                    }
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ),
+          {
+            duration: Infinity, // Keep the toast open until the user interacts
+          }
+        );
   };
 
   const refreshAPIKey = async () => {
-    if (confirm("Are you sure you want to refresh the API key?")) {
-      setLoading(true);
-      try {
-        const response = await fetch(`/api/scoreboard/update`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: scoreboard.id,
-            apiKey: crypto.randomUUID(), // Generate a new API key
-          }),
-        });
+    toast.promise(
+      new Promise(async (resolve, reject) => {
+        try {
+          const response = await fetch(`/api/scoreboard/update`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              id: scoreboard.id,
+              apiKey: crypto.randomUUID(), // Generate a new API key
+            }),
+          });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to refresh API key.");
-        }
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to refresh API key.");
+          }
 
-        alert("API key refreshed successfully.");
-        const data = await response.json();
-        setScoreboard((prev) => ({
-          ...prev,
-          apiKey: data.apiKey, // Update the API key in the state
-        }));
-      } catch (error) {
-        console.error(error);
-        if (error instanceof Error) {
-          alert(error.message || "Failed to refresh API key.");
-        } else {
-          alert("Failed to refresh API key.");
+          const data = await response.json();
+          setScoreboard((prev) => ({
+            ...prev,
+            apiKey: data.apiKey, // Update the API key in the state
+          }));
+          resolve("API key refreshed successfully.");
+        } catch (error) {
+          console.error(error);
+          reject(error instanceof Error ? error.message : "Failed to refresh API key.");
         }
-      } finally {
-        setLoading(false);
+      }),
+      {
+        loading: "Refreshing API key...",
+        success: "API key refreshed successfully.",
+        error: "Failed to refresh API key.",
       }
-    }
-  };
-
-  const handleRefreshAPIKey = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    refreshAPIKey();
+    );
   };
 
   return (
@@ -215,7 +222,7 @@ export default function EditScoreboardPage() {
             />
             <Button
               type="button"
-              onClick={handleRefreshAPIKey}
+              onClick={refreshAPIKey}
               disabled={loading}
               className="ml-2 cursor-pointer"
               variant="outline"
@@ -229,7 +236,7 @@ export default function EditScoreboardPage() {
         </Button>
         <Button
           type="button"
-          onClick={handleDelete}
+          onClick={deleteScoreboard}
           disabled={loading}
           variant="destructive"
           className="w-full cursor-pointer"
