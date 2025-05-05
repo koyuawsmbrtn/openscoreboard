@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { name, description, public: isPublic } = body;
+    const { name, description } = body;
 
     if (!name) {
       return NextResponse.json(
@@ -29,7 +29,6 @@ export async function POST(req: Request) {
         id: crypto.randomUUID(),
         name,
         description: description || null,
-        public: isPublic || false,
         owner: { connect: { id: session.user.id } },
         createdAt: new Date(),
         updatedAt: new Date(),

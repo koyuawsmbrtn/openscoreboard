@@ -91,7 +91,6 @@ model Scoreboard {
   id          String   @id @default(uuid())
   name        String
   description String?
-  public      Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)

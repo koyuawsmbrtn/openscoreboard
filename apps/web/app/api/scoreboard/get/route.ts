@@ -18,6 +18,8 @@ export async function GET(req: Request) {
             where: { slug: board },
             select: {
                 id: true,
+                name: true,
+                description: true,
                 owner: {
                     select: {
                         name: true,
@@ -25,6 +27,9 @@ export async function GET(req: Request) {
                     }
                 },
                 scores: {
+                    orderBy: {
+                        score: "desc",
+                    },
                     select: {
                         username: true,
                         score: true,
