@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
+import { RefreshCcw } from "lucide-react";
 
 export default function EditScoreboardPage() {
   const router = useRouter();
@@ -134,6 +135,50 @@ export default function EditScoreboardPage() {
     deleteScoreboard();
   };
 
+  const refreshAPIKey = async () => {
+    if (confirm("Are you sure you want to refresh the API key?")) {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/scoreboard/update`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: scoreboard.id,
+            apiKey: crypto.randomUUID(), // Generate a new API key
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to refresh API key.");
+        }
+
+        alert("API key refreshed successfully.");
+        const data = await response.json();
+        setScoreboard((prev) => ({
+          ...prev,
+          apiKey: data.apiKey, // Update the API key in the state
+        }));
+      } catch (error) {
+        console.error(error);
+        if (error instanceof Error) {
+          alert(error.message || "Failed to refresh API key.");
+        } else {
+          alert("Failed to refresh API key.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleRefreshAPIKey = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    refreshAPIKey();
+  };
+
   return (
     <div className="container max-w-2xl py-8 mx-auto">
       <h1 className="text-2xl font-bold mb-4">Edit Scoreboard</h1>
@@ -160,12 +205,24 @@ export default function EditScoreboardPage() {
         </div>
         <div>
             <Label htmlFor="apiKey">API Key</Label>
+            <div className="relative">
             <Input
                 id="apiKey"
                 name="apiKey"
                 value={scoreboard.apiKey}
                 readOnly
+                className="pr-12"
             />
+            <Button
+                type="button"
+                onClick={handleRefreshAPIKey}
+                disabled={loading}
+                className="absolute inset-y-0 right-0 px-3 cursor-pointer"
+                variant="outline"
+            >
+                <RefreshCcw className="h-4 w-4" />
+            </Button>
+            </div>
         </div>
         <Button type="submit" disabled={loading} className="w-full cursor-pointer">
           {loading ? "Updating..." : "Update Scoreboard"}

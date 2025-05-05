@@ -45,7 +45,13 @@ export async function GET(req: Request) {
             );
         }
 
-        return NextResponse.json(scoreboard, { status: 200 });
+        return NextResponse.json({
+            id: scoreboard.id,
+            name: scoreboard.name,
+            description: scoreboard.description,
+            owner: scoreboard.owner,
+            scores: scoreboard.scores,
+        }, { status: 200 });
     } catch (error) {
         console.error("Error fetching scoreboard:", error);
         return NextResponse.json(

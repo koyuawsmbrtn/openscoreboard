@@ -204,7 +204,9 @@ Content-Type: application/json
         <p className="text-lg">If the scoreboard is successfully retrieved:</p>
         <SyntaxHighlighter language="json" style={oneDark}>
           {`{
-  "id": "scoreboard1",
+  "id": "bfa7892d-84f7-4e96-b8f1-e0e16a76a5de",
+  "name": "Example Scoreboard",
+  "description": "This is an example scoreboard.",
   "owner": {
     "name": "John Doe",
     "website": "https://example.com"

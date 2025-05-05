@@ -7,15 +7,15 @@ import Github from "./icons/github";
 const footerLinks = [
   {
     title: "Overview",
-    href: "#",
+    href: "/overview",
   },
   {
     title: "Documentation",
-    href: "#",
+    href: "/docs",
   },
   {
     title: "Privacy Policy",
-    href: "#",
+    href: "/privacy",
   },
 ];
 

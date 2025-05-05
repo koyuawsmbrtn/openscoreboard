@@ -14,7 +14,7 @@ export async function PATCH(req: Request) {
     }
 
     const body = await req.json();
-    const { id, name, description, public: isPublic } = body;
+    const { id, name, description, apiKey } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -48,7 +48,7 @@ export async function PATCH(req: Request) {
       data: {
         name: name || scoreboard.name,
         description: description || scoreboard.description,
-        public: typeof isPublic === "boolean" ? isPublic : scoreboard.public,
+        apiKey: apiKey || scoreboard.apiKey,
         updatedAt: new Date(),
       },
     });
