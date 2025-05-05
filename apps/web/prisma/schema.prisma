@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String    @id @default(uuid())
   email         String    @unique
   name          String?
   emailVerified Boolean
@@ -24,10 +24,10 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  Scoreboard Scoreboard[]
   website    String?
 
   @@map("user")
+  Scoreboard Scoreboard[]
 }
 
 model Session {
@@ -82,22 +82,21 @@ model Score {
   updatedAt    DateTime
   username     String
   scoreboardId String
-  scoreboard   Scoreboard @relation(fields: [scoreboardId], references: [id], onDelete: Cascade)
 
   @@map("scores")
+  Scoreboard Scoreboard[] @relation("ScoreboardScores")
 }
 
 model Scoreboard {
-  id          String   @id
+  id          String   @id @default(uuid())
   name        String
-  createdAt   DateTime
-  updatedAt   DateTime
-  ownerId     String
-  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  scores      Score[]
-  apikey      String?  @unique
-  public      Boolean  @default(false)
   description String?
-
-  @@map("scoreboard")
+  public      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  scores      Score[]  @relation("ScoreboardScores")
+  slug        String?  @unique
+  apiKey      String?  @unique
 }

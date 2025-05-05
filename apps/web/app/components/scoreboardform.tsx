@@ -20,6 +20,28 @@ export function CreateScoreboardForm() {
 
     const formData = new FormData(event.currentTarget)
     // Add API call here to create scoreboard
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+    const publicScoreboard = formData.get("public") === "on"
+    const response = await fetch("/api/scoreboard/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        description,
+        public: publicScoreboard,
+      }),
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      setLoading(false)
+      alert(data.error || "Failed to create scoreboard")
+      return
+    }
+    setLoading(false)
+    alert("Scoreboard created successfully")
 
     router.push("/dashboard")
   }
