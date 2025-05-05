@@ -1,84 +1,89 @@
-# Turborepo starter
+# OpenScoreboard
 
-This Turborepo starter is maintained by the Turborepo core team.
+OpenScoreboard is a modern, open-source platform for managing and showcasing game scoreboards. Built with [Next.js](https://nextjs.org), [Prisma](https://www.prisma.io), and [Better-Auth](https://better-auth.dev), it provides a robust and scalable solution for developers and gamers alike.
 
-## Using this example
+## Features
 
-Run the following command:
+- **Scoreboard Management**: Create, edit, and delete scoreboards with ease.
+- **User Authentication**: Secure user authentication powered by Better-Auth.
+- **API Integration**: Easily integrate scoreboards into your applications with a powerful API.
+- **Responsive Design**: Fully responsive UI built with Tailwind CSS and ShadCN components.
+- **Customizable**: Extend and customize the platform to fit your needs.
 
-```sh
-npx create-turbo@latest
-```
+## Getting Started
 
-## What's inside?
+### Prerequisites
 
-This Turborepo includes the following packages/apps:
+Ensure you have the following installed:
 
-### Apps and Packages
+- [Node.js](https://nodejs.org) (v18 or higher)
+- [PostgreSQL](https://www.postgresql.org) (or another supported database)
+- [bun](https://bun.sh) (or your preferred package manager)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Installation
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. Clone the repository:
 
-### Utilities
+   ```bash
+   git clone https://github.com/koyuawsmbrtn/openscoreboard.git
+   cd openscoreboard
+    ```
+2. Install dependencies:
+   ```bash
+   bun install
+   ```
+3. Set up your environment variables:
+    Copy `.env.example` to `.env` and configure your database connection and other settings.
+    ```bash
+    cp .env.example .env
+    ```
+4. Setup the database:
+   Run the following commands to initialize the database and seed it with sample data:
+   ```bash
+   bunx prisma generate
+   bunx prisma db push
+   ```
+5. Start the development server:
+   ```bash
+   bun dev
+   ```
+   Open your browser and navigate to `http://localhost:3000` to see the application in action.
 
-This Turborepo has some additional tools already setup for you:
+## Project Structure
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+This project is a monorepo managed with [TurboRepo](https://turbo.build). Here's an overview of the main directories:
+- `apps/`: Contains the main application code.
+  - `web/`: The Next.js application for the scoreboard.
 
-### Build
+## Deployment
 
-To build all apps and packages, run the following command:
+### Vercel
 
-```
-cd my-turborepo
-pnpm build
-```
+The easiest way to deploy OpenScoreboard is to use [Vercel](https://vercel.com). Simply connect your GitHub repository and follow the prompts to deploy.
 
-### Develop
+## Contributing
 
-To develop all apps and packages, run the following command:
+We welcome contributions! If you'd like to contribute, please follow these steps:
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Commit your changes and push to your fork.
+4. Open a pull request
 
-```
-cd my-turborepo
-pnpm dev
-```
+Please follow the [contribution guidelines](CONTRIBUTING.md) for more details and ensure your code adheres to our coding standards.
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Useful Links
 
-Learn more about the power of Turborepo:
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Prisma Documentation](https://www.prisma.io/docs)
+- [Better-Auth Documentation](https://better-auth.dev/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [ShadCN Documentation](https://ui.shadcn.com/docs)
+- [TurboRepo Documentation](https://turbo.build/docs)
+- [bun Documentation](https://bun.sh/docs)
 
-- [Tasks](https://turborepo.com/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turborepo.com/docs/core-concepts/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+## Acknowledgements
+
+Special thanks to the open-source community for their contributions and support. This project would not be possible without the hard work of many developers and contributors.
